@@ -8,6 +8,12 @@ use App\Http\Controllers\IndicatorResultController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// 👇 add these model imports for the dashboard stats
+use App\Models\Project;
+use App\Models\Participant;
+use App\Models\Indicator;
+use App\Models\IndicatorResult;
+
 Route::get('/', function () {
     // If already logged in, go straight to dashboard
     if (Auth::check()) {
@@ -20,7 +26,12 @@ Route::get('/', function () {
 
 // Dashboard
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('dashboard', [
+        'totalProjects'         => Project::count(),
+        'totalParticipants'     => Participant::count(),
+        'totalIndicators'       => Indicator::count(),
+        'totalIndicatorResults' => IndicatorResult::count(),
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Routes that require login (profile, etc.) + projects
