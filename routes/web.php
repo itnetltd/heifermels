@@ -4,11 +4,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\IndicatorController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndicatorResultController;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    // If already logged in, go straight to dashboard
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
+
+    // Guests see the welcome page
     return view('welcome');
 });
 
@@ -27,9 +33,8 @@ Route::middleware('auth')->group(function () {
     // ✅ CRUD modules – only require auth for now
     Route::resource('projects', ProjectController::class);
     Route::resource('participants', ParticipantController::class);
-    Route::resource('indicators', IndicatorController::class);   // 👈 NEW
+    Route::resource('indicators', IndicatorController::class);
     Route::resource('indicator-results', IndicatorResultController::class);
-
 });
 
 require __DIR__ . '/auth.php';
